@@ -2,12 +2,15 @@ package asteroids.game
 
 import java.awt.event.KeyEvent._
 
+import processing.core.{PApplet, PConstants}
+import processing.event.KeyEvent
+
 import engine.GameBase
 import engine.graphics.{Color, Point, Rectangle, Triangle}
-import processing.core.PApplet
-import processing.event.KeyEvent
+
 import asteroids.logic._
 import asteroids.game.AsteroidsGame._
+
 
 class AsteroidsGame extends GameBase {
 
@@ -22,10 +25,10 @@ class AsteroidsGame extends GameBase {
         scale(DrawSizeFactor.toFloat)
         setBackground(Color.Black)
 
+        gameLogic.asteroids.foreach(drawAsteroid)
         gameLogic.bullets.foreach(drawBullet)
         drawShip(gameLogic.ship)
-
-        drawShip(gameLogic.ship)
+        drawHud()
     }
 
     def drawShip(ship: Ship): Unit = {
@@ -54,6 +57,18 @@ class AsteroidsGame extends GameBase {
     def drawBullet(bullet: Bullet): Unit = {
         setFillColor(Color.Yellow)
         drawEllipse(circleArea(bullet))
+    }
+
+    def drawAsteroid(asteroid: Asteroid): Unit = {
+        setFillColor(Color.Gray)
+        drawEllipse(circleArea(asteroid))
+    }
+
+    def drawHud(): Unit = {
+        setFillColor(Color.White)
+        textAlign(PConstants.LEFT, PConstants.TOP)
+        textSize(16)
+        drawText(s"Wave: ${gameLogic.wave}", Point(10, 10))
     }
 
     def toPoint(v: Vec): Point = Point(v.x.toFloat, v.y.toFloat)

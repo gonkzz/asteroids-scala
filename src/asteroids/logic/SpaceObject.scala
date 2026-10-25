@@ -49,6 +49,13 @@ case class Bullet(position: Vec, velocity: Vec, framesLeft: Int) extends SpaceOb
              framesLeft = framesLeft - 1)
 }
 
+case class Asteroid(position: Vec, velocity: Vec, size: AsteroidSize) extends SpaceObject {
+    def radius: Double = size.radius
+
+    def moved(dims: Dimensions): Asteroid =
+        copy(position = (position + velocity).wrappedInside(dims))
+}
+
 object SpaceObject {
     val ShipRadius: Double = 12  // ship size
     val ShipThrust: Double = 0.15   // speed added per frame while thrusting
