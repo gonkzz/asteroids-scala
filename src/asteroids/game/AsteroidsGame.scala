@@ -19,7 +19,7 @@ class AsteroidsGame extends GameBase {
     }
 
     override def draw(): Unit = {
-        setBackground(Color.Black)
+        // setBackground(Color.Black)
         ellipse(mouseX, mouseY, 20, 20)
     }
 
