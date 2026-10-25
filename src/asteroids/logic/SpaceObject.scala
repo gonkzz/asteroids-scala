@@ -34,6 +34,19 @@ case class Ship(position: Vec, velocity: Vec, heading: Double) extends SpaceObje
     def moved(dims: Dimensions): Ship =
         copy(position = (position + velocity).wrappedInside(dims),
              velocity = velocity * ShipFriction)
+
+    def fired: Bullet =
+        Bullet(nose, velocity + direction * BulletSpeed, BulletLifetime)
+}
+
+case class Bullet(position: Vec, velocity: Vec, framesLeft: Int) extends SpaceObject {
+    def radius: Double = BulletRadius
+
+    def isExpired: Boolean = framesLeft <= 0
+
+    def moved(dims: Dimensions): Bullet =
+        copy(position = (position + velocity).wrappedInside(dims),
+             framesLeft = framesLeft - 1)
 }
 
 object SpaceObject {
@@ -41,4 +54,8 @@ object SpaceObject {
     val ShipThrust: Double = 0.15   // speed added per frame while thrusting
     val ShipMaxSpeed: Double = 7    // pixels per frame
     val ShipFriction: Double = 0.99 // fraction of speed kept each frame
+
+    val BulletRadius: Double = 2
+    val BulletSpeed: Double = 9
+    val BulletLifetime: Int = 50 // frames
 }

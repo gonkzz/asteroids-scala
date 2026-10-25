@@ -21,6 +21,10 @@ class AsteroidsGame extends GameBase {
         updateState()
         scale(DrawSizeFactor.toFloat)
         setBackground(Color.Black)
+
+        gameLogic.bullets.foreach(drawBullet)
+        drawShip(gameLogic.ship)
+
         drawShip(gameLogic.ship)
     }
 
@@ -41,6 +45,17 @@ class AsteroidsGame extends GameBase {
         Triangle(toPoint(back), toPoint(right), toPoint(left))
     }
 
+    // the square around an object's collision circle
+    def circleArea(obj: SpaceObject): Rectangle = {
+        val r = obj.radius.toFloat
+        Rectangle(toPoint(obj.position) - Point(r, r), 2 * r, 2 * r)
+    }
+
+    def drawBullet(bullet: Bullet): Unit = {
+        setFillColor(Color.Yellow)
+        drawEllipse(circleArea(bullet))
+    }
+
     def toPoint(v: Vec): Point = Point(v.x.toFloat, v.y.toFloat)
 
     override def keyPressed(event: KeyEvent): Unit = {
@@ -48,6 +63,7 @@ class AsteroidsGame extends GameBase {
             case VK_LEFT | VK_A  => gameLogic.setTurningLeft(true)
             case VK_RIGHT | VK_D => gameLogic.setTurningRight(true)
             case VK_UP | VK_W    => gameLogic.setThrusting(true)
+            case VK_SPACE        => gameLogic.shoot()
             case _               => ()
         }
     }

@@ -25,6 +25,11 @@ class AsteroidsLogic(val dims: Dimensions) {
 
     def ship: Ship = gameState.ship
     def isThrusting: Boolean = gameState.controls.thrusting
+
+    def shoot(): Unit =
+        gameState = gameState.withBulletFired
+
+    def bullets: Seq[Bullet] = gameState.bullets
 }
 
 object AsteroidsLogic {
