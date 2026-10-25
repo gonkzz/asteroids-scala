@@ -27,8 +27,18 @@ case class Ship(position: Vec, velocity: Vec, heading: Double) extends SpaceObje
 
     def turnedBy(degrees: Double): Ship =
         copy(heading = heading + degrees)
+
+    def thrusted: Ship =
+        copy(velocity = (velocity + direction * ShipThrust).withMaxLength(ShipMaxSpeed))
+
+    def moved(dims: Dimensions): Ship =
+        copy(position = (position + velocity).wrappedInside(dims),
+             velocity = velocity * ShipFriction)
 }
 
 object SpaceObject {
     val ShipRadius: Double = 12  // ship size
+    val ShipThrust: Double = 0.15   // speed added per frame while thrusting
+    val ShipMaxSpeed: Double = 7    // pixels per frame
+    val ShipFriction: Double = 0.99 // fraction of speed kept each frame
 }
