@@ -54,6 +54,12 @@ case class Asteroid(position: Vec, velocity: Vec, size: AsteroidSize) extends Sp
 
     def moved(dims: Dimensions): Asteroid =
         copy(position = (position + velocity).wrappedInside(dims))
+
+    // two smaller asteroids flying apart, or nothing if this one is already the smallest
+    def fragments: Seq[Asteroid] =
+        size.smaller.toSeq.flatMap(smallerSize =>
+            Seq(SplitAngle, -SplitAngle).map(angle =>
+                Asteroid(position, velocity.rotatedBy(angle) * SplitSpeedUp, smallerSize)))
 }
 
 object SpaceObject {
@@ -65,4 +71,7 @@ object SpaceObject {
     val BulletRadius: Double = 2
     val BulletSpeed: Double = 9
     val BulletLifetime: Int = 50 // frames
+
+    val SplitAngle: Double = 40   // degrees
+    val SplitSpeedUp: Double = 1.4
 }

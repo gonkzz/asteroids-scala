@@ -19,13 +19,16 @@ case class GameState(ship: Ship,
                      asteroids: Seq[Asteroid],
                      bullets: Seq[Bullet],
                      controls: Controls,
-                     wave: Int) {
+                     score: Int,
+                     wave: Int,
+                     isGameOver: Boolean) {
 
     def withControls(newControls: Controls): GameState =
         copy(controls = newControls)
 
     def stepped(dims: Dimensions): GameState =
-        movedForward(dims)
+        if (isGameOver) this
+        else movedForward(dims).withCollisionsResolved
 
     private def movedForward(dims: Dimensions): GameState =
         copy(ship = steeredShip.moved(dims),
@@ -39,8 +42,20 @@ case class GameState(ship: Ship,
         else turnedShip
     }
 
+    private def withCollisionsResolved: GameState = {
+        val (hitAsteroids, missedAsteroids) =
+            asteroids.partition(asteroid => bullets.exists(_.collidesWith(asteroid)))
+        val remainingBullets =
+            bullets.filter(bullet => !hitAsteroids.exists(bullet.collidesWith))
+
+        copy(asteroids = missedAsteroids ++ hitAsteroids.flatMap(_.fragments),
+             bullets = remainingBullets,
+             score = score + hitAsteroids.map(_.size.points).sum,
+             isGameOver = missedAsteroids.exists(_.collidesWith(ship)))
+    }
+
     def withBulletFired: GameState =
-        if (bullets.length >= MaxBullets) this
+        if (isGameOver || bullets.length >= MaxBullets) this
         else copy(bullets = ship.fired +: bullets)
 
     def isWaveCleared: Boolean = asteroids.isEmpty
@@ -59,5 +74,7 @@ object GameState {
                   asteroids = asteroids,
                   bullets = Seq(),
                   controls = Controls.Released,
-                  wave = 1)
+                  score = 0,
+                  wave = 1,
+                  isGameOver = false)
 }

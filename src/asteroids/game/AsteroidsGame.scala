@@ -19,6 +19,7 @@ class AsteroidsGame extends GameBase {
     val dims: Dimensions = gameLogic.dims
     val widthInPixels: Int = (DrawSizeFactor * dims.width).ceil.toInt
     val heightInPixels: Int = (DrawSizeFactor * dims.height).ceil.toInt
+    val screenArea: Rectangle = Rectangle(Point(0, 0), dims.width.toFloat, dims.height.toFloat)
 
     override def draw(): Unit = {
         updateState()
@@ -29,6 +30,14 @@ class AsteroidsGame extends GameBase {
         gameLogic.bullets.foreach(drawBullet)
         drawShip(gameLogic.ship)
         drawHud()
+        if (gameLogic.isGameOver) drawGameOverScreen()
+    }
+
+    def drawGameOverScreen(): Unit = {
+        setFillColor(Color.Red)
+        drawTextCentered("GAME OVER!", 30, screenArea.center)
+        setFillColor(Color.White)
+        drawTextCentered("press R to restart", 16, screenArea.center + Point(0, 40))
     }
 
     def drawShip(ship: Ship): Unit = {
@@ -68,7 +77,7 @@ class AsteroidsGame extends GameBase {
         setFillColor(Color.White)
         textAlign(PConstants.LEFT, PConstants.TOP)
         textSize(16)
-        drawText(s"Wave: ${gameLogic.wave}", Point(10, 10))
+        drawText(s"Score: ${gameLogic.score}   Wave: ${gameLogic.wave}", Point(10, 10))
     }
 
     def toPoint(v: Vec): Point = Point(v.x.toFloat, v.y.toFloat)
@@ -79,6 +88,7 @@ class AsteroidsGame extends GameBase {
             case VK_RIGHT | VK_D => gameLogic.setTurningRight(true)
             case VK_UP | VK_W    => gameLogic.setThrusting(true)
             case VK_SPACE        => gameLogic.shoot()
+            case VK_R            => gameLogic.restart()
             case _               => ()
         }
     }

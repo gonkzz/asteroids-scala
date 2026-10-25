@@ -50,15 +50,20 @@ class AsteroidsLogic(val randomGen: RandomGenerator,
         updateControls(_.copy(thrusting = thrusting))
 
     def ship: Ship = gameState.ship
-    def isThrusting: Boolean = gameState.controls.thrusting
+    def isThrusting: Boolean = gameState.controls.thrusting && !isGameOver
 
     def shoot(): Unit =
         gameState = gameState.withBulletFired
+
+    def restart(): Unit =
+        if (gameState.isGameOver) gameState = newGame()
 
     def bullets: Seq[Bullet] = gameState.bullets
 
     def asteroids: Seq[Asteroid] = gameState.asteroids
     def wave: Int = gameState.wave
+    def score: Int = gameState.score
+    def isGameOver: Boolean = gameState.isGameOver
 }
 
 object AsteroidsLogic {
