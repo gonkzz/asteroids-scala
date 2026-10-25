@@ -2,15 +2,14 @@ package asteroids.game
 
 import processing.core.PApplet
 import engine.GameBase
-import engine.graphics.Color
+import engine.graphics.{Color, Point, Rectangle, Triangle}
 
 import asteroids.logic._
-import engine.graphics.{Color, Point, Rectangle}
 
 class AsteroidsGame extends GameBase {
-    var dot: Vec = Vec(400, 300)
-    val dotVelocity: Vec = Vec.fromAngle(30) * 5
     val dims: Dimensions = Dimensions(800, 600)
+    // temporary: replaced by the game logic in step 4
+    var ship: Ship = Ship(dims.center, Vec.Zero, heading = 0)
 
     override def settings(): Unit = {
         pixelDensity(displayDensity())
@@ -24,12 +23,16 @@ class AsteroidsGame extends GameBase {
         text("", 0, 0)
     }
 
+    def drawShip(ship: Ship): Unit = {
+        setFillColor(Color.White)
+        val Seq(nose, backRight, backLeft) = ship.outline.map(toPoint)
+        drawTriangle(Triangle(nose, backRight, backLeft))
+    }
+
     override def draw(): Unit = {
         setBackground(Color.Black)
-        // ellipse(mouseX, mouseY, 20, 20)
-        dot = (dot + dotVelocity).wrappedInside(dims)
-        setFillColor(Color.Yellow)
-        drawEllipse(Rectangle(toPoint(dot) - Point(5, 5), 10, 10))
+        ship = ship.turnedBy(2)
+        drawShip(ship)
     }
 
     def toPoint(v: Vec): Point = Point(v.x.toFloat, v.y.toFloat)
