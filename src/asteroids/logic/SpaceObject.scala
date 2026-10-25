@@ -30,5 +30,5 @@ case class Ship(position: Vec, velocity: Vec, heading: Double) extends SpaceObje
 }
 
 object SpaceObject {
-    val ShipRadius: Double = 12
+    val ShipRadius: Double = 12  // ship size
 }
