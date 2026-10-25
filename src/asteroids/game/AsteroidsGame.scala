@@ -27,6 +27,11 @@ class AsteroidsGame extends GameBase {
         setFillColor(Color.White)
         val Seq(nose, backRight, backLeft) = ship.outline.map(toPoint)
         drawTriangle(Triangle(nose, backRight, backLeft))
+        // circle range collision
+        noFill()
+        stroke(255, 0, 0)
+        drawEllipse(Rectangle(toPoint(ship.position) - Point(12, 12), 24, 24))
+        noStroke()
     }
 
     override def draw(): Unit = {
